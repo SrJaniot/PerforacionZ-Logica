@@ -41,6 +41,7 @@ export namespace SQLConfig {
   export const EliminarPerforacion = 'SELECT FUN_ELIMINAR_PERFORACION_JSON($1) as resultado';
   export const obtenerPerforacionID = 'SELECT FUN_OBTENER_PERFORACION_POR_ID_JSON($1) as resultado';
   export const obtenerPerforacionesPorProyectoID = 'SELECT FUN_OBTENER_PERFORACIONES_POR_PROYECTO_JSON($1) as resultado';
-  
+
   export const RegistrarReporteMovimientoBroca = 'SELECT FUN_INSERTAR_MOVIMIENTO_DE_BROCA_JSON($1,$2,$3,$4,$5,$6) as resultado';
+  export const ObtenerMovimientoBrocasPorPerforacion = 'SELECT FUN_OBTENER_MOVIMIENTOS_DE_BROCA_POR_ID_PERFORACION_JSON($1) as resultado';
 }
