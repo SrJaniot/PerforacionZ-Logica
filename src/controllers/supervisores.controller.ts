@@ -346,6 +346,113 @@ export class SupervisoresController {
 
 
 
+   //FUNCION PARA OBTENER TODAS LOS USUARIOS DE LA API DE SEGURIDAD----------------------------------------------------------------------------------------------------------
+  @authenticate({
+    strategy: 'auth',
+    options: [ConfiguracionSeguridad.menuadmin, ConfiguracionSeguridad.listarAccion]
+  })
+  @get('/ObtenerUsuariosSeguridad')
+  @response(200, {
+    description: 'Obtener usuarios de la api de seguridad',
+    content:{
+      'application/json':{
+        schema: getModelSchemaRef(GenericModel),
+      },
+    },
+  })
+  async obtenerUsuariosSeguridad():Promise<object>{
+    try{
+      //const sql =SQLConfig.crearContexto;
+      // EN ESTE CASO ESTA FUNCION RETORNA UN JSON DESDE POSTGRES
+      //const sql = SQLConfig.ObtenerSupervisores;
+      //const result = await this.genericRepository.dataSource.execute(sql);
+      // FUN_CONSULTAR_BROCAS()  fun_consultar_brocas()
+      // gracias a que descubri que si le pongo al final del llamado select ej: SELECT FUN_INSERTAR_PRUEBA_GENERICA_JSON($1,$2,$3) as resultado; ese "as resultado"  puedo acceder a resultado con result[0].resultado y ahi tengo el CODIGO, MENSAJE Y DATOS que es lo que retorna la funcion de postgres
+      //ahora se llama result[0].resultado.CODIGO, result[0].resultado.MENSAJE, result[0].resultado.DATOS
+
+      //llamamos al servicio CrearUsuariosApiSeguridadService para obtener los usuarios de la api de seguridad y le enviamos el token que trae la request para que el microservicio de seguridad valide el token y permita obtener los usuarios
+      const token = this.request.headers.authorization;
+      console.log(token);
+      const result = await this.crearUsuariosApiSeguridadService.ObtenerUsuarios(token!);
+      console.log(result);
+
+      if(!result){
+        return {
+          "CODIGO": 500,
+          "MENSAJE": "Error al obtener los usuarios de la api de seguridad",
+          "DATOS": null
+        };
+      }
+      return {
+        "CODIGO": 200,
+        "MENSAJE": "Usuarios obtenidos correctamente de la api de seguridad",
+        "DATOS": result
+      };
+
+    }catch(error){
+      return {
+        "CODIGO": 500,
+        "MENSAJE": "Error POSTGRES",
+        "DATOS": error
+      };
+    }
+  }
+
+
+
+  //funcion para obtener los usuarios de la api de seguridad por id de usuario, para poder obtener los datos del usuario y mostrarlos en la aplicacion de gestion de proyectos
+  @authenticate({
+    strategy: 'auth',
+    options: [ConfiguracionSeguridad.menuadmin, ConfiguracionSeguridad.buscarAccion_id]
+  })
+  @get('/ObtenerUsuarioSeguridadPorId/{id_usuario}')
+  @response(200, {
+    description: 'Obtener usuario de la api de seguridad por id',
+    content:{
+      'application/json':{
+        schema: getModelSchemaRef(GenericModel),
+      },
+    },
+  })
+  async obtenerUsuarioSeguridadPorId(
+    @param.path.string('id_usuario') id_usuario: String,
+  ):Promise<object>{
+    try{
+      //llamamos al servicio CrearUsuariosApiSeguridadService para obtener los usuarios de la api de seguridad y le enviamos el token que trae la request para que el microservicio de seguridad valide el token y permita obtener los usuarios
+      const token = this.request.headers.authorization;
+      console.log(token);
+      const result = await this.crearUsuariosApiSeguridadService.ObtenerUsuarioPorId(id_usuario, token!);
+      console.log(result);
+
+      if(!result){
+        return {
+          "CODIGO": 500,
+          "MENSAJE": "Error al obtener el usuario de la api de seguridad",
+          "DATOS": null
+        };
+      }
+      return {
+        "CODIGO": 200,
+        "MENSAJE": "Usuario obtenido correctamente de la api de seguridad",
+        "DATOS": result
+      };
+
+    }catch(error){
+      return {
+        "CODIGO": 500,
+        "MENSAJE": "Error POSTGRES",
+        "DATOS": error
+      };
+    }
+  }
+
+
+
+
+
+
+
+
 
 
 

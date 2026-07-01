@@ -48,4 +48,44 @@ export class CrearUsuariosApiSeguridadService {
 
     return await respuesta.json();
   }
+
+
+
+  //obtener usuarios de la api de seguridad para gestionar los usuarios en la aplicacion de gestion de proyectos
+   async ObtenerUsuarios(
+    token: string
+  ) {
+    const url = `${ConfiguracionSeguridad.hostSeguridad}/usuarios/valores`;
+
+    const respuesta = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token,
+      },
+    });
+
+
+    return await respuesta.json();
+  }
+
+  //obtener usuarios de la api de seguridad para gestionar los usuarios en la aplicacion de gestion de proyectos
+  async ObtenerUsuarioPorId(
+    id: String,
+    token: string
+  ) {
+    const url = `${ConfiguracionSeguridad.hostSeguridad}/usuarios/valores/${id}`;
+
+    const respuesta = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token,
+      },
+    });
+
+    return await respuesta.json();
+  }
+
+
 }
