@@ -39,6 +39,15 @@ export class InsertMovimientoBroca extends Model {
   usuario: string;
 
 
+
+  @property({
+    type: 'string',
+    required: true,
+  })
+  observaciones: string;
+
+
+
   constructor(data?: Partial<InsertMovimientoBroca>) {
     super(data);
   }

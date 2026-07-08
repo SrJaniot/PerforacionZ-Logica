@@ -1,7 +1,7 @@
 // Uncomment these imports to begin using these cool features!
 
 import {DefaultCrudRepository, juggler} from '@loopback/repository';
-import {GenericModel, IdEntero, InsertMovimientoBroca, ModelInsertPerforacion} from '../models';
+import {GenericModel, IdEntero, InsertMovimientoBroca, ModelInsertPerforacion, ModelUpdatePerforacion} from '../models';
 import {inject, service} from '@loopback/core';
 import {MailService} from '../services';
 import {authenticate} from '@loopback/authentication';
@@ -66,7 +66,10 @@ export class PerforacionesController {
         data.id_proyecto,
         data.Profundidad_actual,
         data.fecha_inicio_perforacion,
-        data.usuario
+        data.usuario,
+        data.nombre_perforacion,
+        data.profundidad_objetivo
+
 
       ];
       const result = await this.genericRepository.dataSource.execute(sql, params);
@@ -97,6 +100,87 @@ export class PerforacionesController {
       };
     }
   }
+
+
+
+
+
+
+
+
+  // funcion para creacion de una perforacion, esta funcion recibe un json con los datos de la perforacion y llama a la funcion de postgres para insertar los datos en la base de datos, esta funcion retorna un json con el codigo, mensaje y datos que retorna la funcion de postgres
+   @authenticate({
+    strategy: 'auth',
+    options: [ConfiguracionSeguridad.MenuProyectos, ConfiguracionSeguridad.listarAccion]
+  })
+  //METODO POST PARA CREAR UNA perforacion
+  @post('/ActualizarPerforacion')
+  @response(200, {
+    description: 'creacion de un Perforacion ',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(ModelUpdatePerforacion),
+      },
+    },
+  })
+  async actualizarPerforacion(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(ModelUpdatePerforacion),
+        },
+      },
+    })
+    data: ModelUpdatePerforacion,
+  ): Promise<object> {
+    try {
+
+
+
+      const sql = SQLConfig.ActualizarPerforacion;
+      const params = [
+        data.id_perforacion,
+        data.id_proyecto,
+        data.Profundidad_actual,
+        data.fecha_inicio_perforacion,
+        data.fecha_fin_perforacion,
+        data.usuario,
+        data.nombre_perforacion,
+        data.profundidad_objetivo,
+        data.estado_perforacion
+
+
+
+      ];
+      const result = await this.genericRepository.dataSource.execute(sql, params);
+      //console.log(result[0]);
+      //console.log(result[0]);
+      //console.log(result[0].fun_insertar_contexto_json);
+      //console.log(result[0].fun_insert_torneo.id_torneo);
+      //FUN_INSERTAR_PRUEBA_GENERICA_JSON  fun_insertar_prueba_generica_json
+      // gracias a que descubri que si le pongo al final del llamado select ej: SELECT FUN_INSERTAR_PRUEBA_GENERICA_JSON($1,$2,$3) as resultado; ese "as resultado"  puedo acceder a resultado con result[0].resultado y ahi tengo el CODIGO, MENSAJE Y DATOS que es lo que retorna la funcion de postgres
+      //ahora se llama result[0].resultado.CODIGO, result[0].resultado.MENSAJE, result[0].resultado.DATOS
+      if (result[0].resultado.CODIGO != 200) {
+        return {
+          "CODIGO": result[0].resultado.CODIGO,
+          "MENSAJE": result[0].resultado.MENSAJE,
+          "DATOS": null
+        };
+      }
+      return {
+        "CODIGO": result[0].resultado.CODIGO,
+        "MENSAJE": result[0].resultado.MENSAJE,
+        "DATOS": result[0].resultado.ID_BROCA
+      };
+    } catch (error) {
+      return {
+        "CODIGO": 500,
+        "MENSAJE": "Error al insertar datos  de la perforacion en la funcion de postgres ERROR POSTGRES",
+        "DATOS": error
+      };
+    }
+  }
+
 
 
 
@@ -321,7 +405,8 @@ export class PerforacionesController {
         data.Fecha_movimiento,
         data.tipo_movimiento.toUpperCase(),
         data.profundidad_movimiento,
-        data.usuario
+        data.usuario,
+        data.observaciones
       ];
       const result = await this.genericRepository.dataSource.execute(sql, params);
       console.log(result[0]);
@@ -463,7 +548,7 @@ export class PerforacionesController {
   }
 
 
-  
+
 
 
 

@@ -15,3 +15,4 @@ export * from './insert-prestamo-broca.model';
 export * from './model-devolver-broca.model';
 export * from './model-insert-perforacion.model';
 export * from './insert-movimiento-broca.model';
+export * from './model-update-perforacion.model';

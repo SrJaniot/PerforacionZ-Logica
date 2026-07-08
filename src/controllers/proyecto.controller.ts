@@ -164,7 +164,9 @@ export class ProyectoController {
         data.nom_proyecto,
         data.id_municipio,
         data.descripcion_proyecto,
-        data.usuario_insert
+        data.usuario_insert,
+        data.estado_proyecto,
+        data.prioridad_proyecto
       ];
       const result = await this.genericRepository.dataSource.execute(sql, params);
       //console.log(result[0]);
@@ -421,6 +423,119 @@ export class ProyectoController {
       return {
         "CODIGO": 500,
         "MENSAJE": "ERROR POSTGRES",
+        "DATOS": error
+      };
+    }
+  }
+
+
+
+
+
+
+
+
+
+  //FUNCION PARA OBTENER TODAS LOS DEPARTAMENOTS CON  FUN_OBTENER_TODOS_DEPARTAMENTOS_JSON----------------------------------------------------------------------------------------------------------
+  @authenticate({
+    strategy: 'auth',
+    options: [ConfiguracionSeguridad.MenuProyectos, ConfiguracionSeguridad.listarAccion]
+  })
+  @get('/ObtenerDepartamentos')
+  @response(200, {
+    description: 'Obtener departamentos',
+    content:{
+      'application/json':{
+        schema: getModelSchemaRef(GenericModel),
+      },
+    },
+  })
+  async obtenerDepartamentos():Promise<object>{
+    try{
+      //const sql =SQLConfig.crearContexto;
+      // EN ESTE CASO ESTA FUNCION RETORNA UN JSON DESDE POSTGRES
+      const sql = SQLConfig.ObtenerDepartamentos;
+      const result = await this.genericRepository.dataSource.execute(sql);
+      // FUN_CONSULTAR_BROCAS()  fun_consultar_brocas()
+      // gracias a que descubri que si le pongo al final del llamado select ej: SELECT FUN_INSERTAR_PRUEBA_GENERICA_JSON($1,$2,$3) as resultado; ese "as resultado"  puedo acceder a resultado con result[0].resultado y ahi tengo el CODIGO, MENSAJE Y DATOS que es lo que retorna la funcion de postgres
+      //ahora se llama result[0].resultado.CODIGO, result[0].resultado.MENSAJE, result[0].resultado.DATOS
+
+
+      if(result[0].resultado.CODIGO !=200){
+        return {
+          "CODIGO": result[0].resultado.CODIGO,
+          "MENSAJE": result[0].resultado.MENSAJE,
+          "DATOS": null
+        };
+      }
+      return {
+        "CODIGO": result[0].resultado.CODIGO,
+        "MENSAJE": result[0].resultado.MENSAJE,
+        "DATOS": result[0].resultado.DATOS
+      };
+
+    }catch(error){
+      return {
+        "CODIGO": 500,
+        "MENSAJE": "Error POSTGRES",
+        "DATOS": error
+      };
+    }
+  }
+
+
+
+    //FUNCION PARA OBTENER MUNICIPIOS A PARTIR DE UN DEPARTAMENTO----------------------------------------------------------------------------------------------------------
+
+  @authenticate({
+    strategy: 'auth',
+    options: [ConfiguracionSeguridad.MenuProyectos, ConfiguracionSeguridad.buscarAccion_id]
+  })
+  //METODO GET PARA OBTENER DATOS DE LA TABLA BROCA USANDO EL REPOSITORIO GENERICO PEDIR PARAMETRO ID_BROCA
+  @get('/ObtenerMunicipiosIDDepartamento/{id_departamento}')
+  @response(200, {
+  description: 'Obtener Municipios por id de departamento',
+  content:{
+    'application/json':{
+      schema: getModelSchemaRef(GenericModel),
+    },
+  },
+  })
+  async obtenerMunicipiosIDDepartamento(
+    @param.path.string('id_departamento') id_departamento: String,
+  ):Promise<object>{
+    try{
+      //const sql =SQLConfig.crearContexto;
+      // EN ESTE CASO ESTA FUNCION RETORNA UN JSON DESDE POSTGRES
+      const sql = SQLConfig.ObtenerMunicipiosIDDepartamento;
+      const params =[
+        id_departamento
+      ];
+      //console.log(sql);
+      //console.log(params);
+      const result = await this.genericRepository.dataSource.execute(sql, params);
+      //console.log(result[0]);
+      //FUN_CONSULTAR_CONTEXTO_ID() fun_consultar_contexto_id()
+      // gracias a que descubri que si le pongo al final del llamado select ej: SELECT FUN_INSERTAR_PRUEBA_GENERICA_JSON($1,$2,$3) as resultado; ese "as resultado"  puedo acceder a resultado con result[0].resultado y ahi tengo el CODIGO, MENSAJE Y DATOS que es lo que retorna la funcion de postgres
+      //ahora se llama result[0].resultado.CODIGO, result[0].resultado.MENSAJE, result[0].resultado.DATOS
+
+
+      if(result[0].resultado.CODIGO !=200){
+        return {
+          "CODIGO": result[0].resultado.CODIGO,
+          "MENSAJE": result[0].resultado.MENSAJE,
+          "DATOS": null
+        };
+      }
+      return {
+        "CODIGO": result[0].resultado.CODIGO,
+        "MENSAJE": result[0].resultado.MENSAJE,
+        "DATOS": result[0].resultado.DATOS
+      };
+    }catch(error){
+      return {
+        "CODIGO": 500,
+        "MENSAJE": "Error POSTGRES",
         "DATOS": error
       };
     }

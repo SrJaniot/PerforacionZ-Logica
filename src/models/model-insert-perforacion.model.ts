@@ -27,6 +27,20 @@ export class ModelInsertPerforacion extends Model {
   usuario: string;
 
 
+    @property({
+    type: 'date',
+    required: true,
+  })
+  nombre_perforacion: string;
+
+  @property({
+    type: 'number',
+    required: true,
+  })
+  profundidad_objetivo: number;
+
+
+
   constructor(data?: Partial<ModelInsertPerforacion>) {
     super(data);
   }

@@ -29,19 +29,23 @@ export namespace SQLConfig {
 
   //funciones para el controlador proyecto.controller.ts
   export const CrearProyecto = 'SELECT FUN_INSERTAR_PROYECTOS_JSON($1,$2,$3,$4,$5) as resultado';
-  export const ActualizarProyecto = 'SELECT FUN_ACTUALIZAR_PROYECTOS_JSON($1,$2,$3,$4,$5,$6) as resultado';
+  export const ActualizarProyecto = 'SELECT FUN_ACTUALIZAR_PROYECTOS_JSON($1,$2,$3,$4,$5,$6,$7,$8) as resultado';
   export const ObtenerProyectoID = 'SELECT FUN_OBTENER_PROYECTO_POR_ID_JSON($1) as resultado';
   export const ObtenerProyectos = 'SELECT FUN_OBTENER_TODOS_PROYECTOS_JSON() as resultado';
   export const ObtenerProyectosSupervisorID = 'SELECT FUN_OBTENER_PROYECTOS_POR_SUPERVISOR_JSON($1) as resultado';
   export const EliminarProyecto = 'SELECT FUN_ELIMINAR_PROYECTO_POR_ID_JSON($1) as resultado';
 
+  export const ObtenerDepartamentos = 'SELECT FUN_OBTENER_TODOS_DEPARTAMENTOS_JSON() as resultado';
+  export const ObtenerMunicipiosIDDepartamento = 'SELECT FUN_OBTENER_MUNICIPIOS_POR_DEPARTAMENTO_JSON($1) as resultado';
+
 
   //funciones para el controlador perforaciones.controller.ts
-  export const CrearPerforacion = 'SELECT FUN_INSERTAR_PERFORACIONES_JSON($1,$2,$3,$4) as resultado';
+  export const CrearPerforacion = 'SELECT FUN_INSERTAR_PERFORACIONES_JSON($1,$2,$3,$4,$5,$6) as resultado';
   export const EliminarPerforacion = 'SELECT FUN_ELIMINAR_PERFORACION_JSON($1) as resultado';
   export const obtenerPerforacionID = 'SELECT FUN_OBTENER_PERFORACION_POR_ID_JSON($1) as resultado';
   export const obtenerPerforacionesPorProyectoID = 'SELECT FUN_OBTENER_PERFORACIONES_POR_PROYECTO_JSON($1) as resultado';
+  export const ActualizarPerforacion = 'SELECT FUN_ACTUALIZAR_PERFORACIONES_JSON($1,$2,$3,$4,$5,$6,$7,$8,$9) as resultado';
 
-  export const RegistrarReporteMovimientoBroca = 'SELECT FUN_INSERTAR_MOVIMIENTO_DE_BROCA_JSON($1,$2,$3,$4,$5,$6) as resultado';
+  export const RegistrarReporteMovimientoBroca = 'SELECT FUN_INSERTAR_MOVIMIENTO_DE_BROCA_JSON($1,$2,$3,$4,$5,$6,$7) as resultado';
   export const ObtenerMovimientoBrocasPorPerforacion = 'SELECT FUN_OBTENER_MOVIMIENTOS_DE_BROCA_POR_ID_PERFORACION_JSON($1) as resultado';
 }

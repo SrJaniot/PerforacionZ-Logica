@@ -9,6 +9,18 @@ export class ModelUpdateProyecto extends ModelInsertProyecto {
   })
   id_proyecto: number;
 
+  @property({
+    type: 'string',
+    required: true,
+  })
+  estado_proyecto: string;
+
+  @property({
+    type: 'string',
+    required: true,
+  })
+  prioridad_proyecto: string;
+
 
   constructor(data?: Partial<ModelUpdateProyecto>) {
     super(data);
