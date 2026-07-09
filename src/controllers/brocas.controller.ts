@@ -500,11 +500,16 @@ export class BrocasController {
     },
   })
   async obtenerBrocaInstanciadaID(
-    @param.path.number('id_brocaInstanciada') id_brocaInstanciada: number,
+    @param.path.string('id_brocaInstanciada') id_brocaInstanciada: String,
   ): Promise<object> {
     try {
+
       //const sql =SQLConfig.crearContexto;
       // EN ESTE CASO ESTA FUNCION RETORNA UN JSON DESDE POSTGRES
+
+
+
+
       const sql = SQLConfig.ObtenerBrocaInstanciadaID;
       const params = [
         id_brocaInstanciada
@@ -1002,6 +1007,9 @@ export class BrocasController {
       //ahora se llama result[0].resultado.CODIGO, result[0].resultado.MENSAJE, result[0].resultado.DATOS
 
 
+
+
+
       if (result[0].resultado.CODIGO != 200) {
         return {
           "CODIGO": result[0].resultado.CODIGO,
@@ -1022,6 +1030,123 @@ export class BrocasController {
       };
     }
   }
+
+
+
+
+
+
+
+  // FUNCION PARA OBTENER TODAS LAS BROCAS PRESTADAS ACTUALMENTE CON OBTENER_PRESTAMOS_BROCA_ACTIVOS() ---------------------------------------------------------------------------------------------------------
+  @authenticate({
+    strategy: 'auth',
+    options: [ConfiguracionSeguridad.MenuBrocas, ConfiguracionSeguridad.listarAccion]
+  })
+  @get('/ObtenerBrocasPrestadasActivos')
+  @response(200, {
+    description: 'Obtener brocas prestadas actualmente',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(GenericModel),
+      },
+    },
+  })
+  async obtenerBrocasPrestadas(): Promise<object> {
+    try {
+      //const sql =SQLConfig.crearContexto;
+      // EN ESTE CASO ESTA FUNCION RETORNA UN JSON DESDE POSTGRES
+      const sql = SQLConfig.ObtenerBrocasPrestadasActivos;
+      const result = await this.genericRepository.dataSource.execute(sql);
+      // FUN_CONSULTAR_BROCAS()  fun_consultar_brocas()
+      // gracias a que descubri que si le pongo al final del llamado select ej: SELECT FUN_INSERTAR_PRUEBA_GENERICA_JSON($1,$2,$3) as resultado; ese "as resultado"  puedo acceder a resultado con result[0].resultado y ahi tengo el CODIGO, MENSAJE Y DATOS que es lo que retorna la funcion de postgres
+      //ahora se llama result[0].resultado.CODIGO, result[0].resultado.MENSAJE, result[0].resultado.DATOS
+
+
+      if (result[0].resultado.CODIGO != 200) {
+        return {
+          "CODIGO": result[0].resultado.CODIGO,
+          "MENSAJE": result[0].resultado.MENSAJE,
+          "DATOS": null
+        };
+      }
+      return {
+        "CODIGO": result[0].resultado.CODIGO,
+        "MENSAJE": result[0].resultado.MENSAJE,
+        "DATOS": result[0].resultado.DATOS
+      };
+
+    } catch (error) {
+      return {
+        "CODIGO": 500,
+        "MENSAJE": "Error POSTGRES",
+        "DATOS": error
+      };
+    }
+  }
+
+
+
+
+
+
+  //FUNCION PARA OBTENER EL HISTORIAL DE PRESTAMOS DE UNA BROCA OBTENER_HISTORIAL_PRESTAMOS_BROCA_POR_BROCA_INSTANCIADA    ----------------------------------------------------------------------------------------------------------
+    @authenticate({
+    strategy: 'auth',
+    options: [ConfiguracionSeguridad.MenuBrocas, ConfiguracionSeguridad.buscarAccion_id]
+  })
+  //METODO GET PARA OBTENER EL HISTORIAL DE PRESTAMOS DE UNA BROCA USANDO EL REPOSITORIO GENERICO PEDIR PARAMETRO ID_BROCA
+  @get('/ObtenerHistorialPrestamosBroca/{id_broca_instanciada}')
+  @response(200, {
+    description: 'Obtener Brocas por Proyecto',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(GenericModel),
+      },
+    },
+  })
+  async obtenerHistorialPrestamosBroca(
+    @param.path.string('id_broca_instanciada') id_broca_instanciada: string,
+  ): Promise<object> {
+    try {
+      //const sql =SQLConfig.crearContexto;
+      // EN ESTE CASO ESTA FUNCION RETORNA UN JSON DESDE POSTGRES
+      const sql = SQLConfig.ObtenerHistorialPrestamosBrocaPorBrocaInstanciada;
+      const params = [
+        id_broca_instanciada
+      ];
+      //console.log(sql);
+      //console.log(params);
+      const result = await this.genericRepository.dataSource.execute(sql, params);
+      //console.log(result[0]);
+      //FUN_CONSULTAR_CONTEXTO_ID() fun_consultar_contexto_id()
+      // gracias a que descubri que si le pongo al final del llamado select ej: SELECT FUN_INSERTAR_PRUEBA_GENERICA_JSON($1,$2,$3) as resultado; ese "as resultado"  puedo acceder a resultado con result[0].resultado y ahi tengo el CODIGO, MENSAJE Y DATOS que es lo que retorna la funcion de postgres
+      //ahora se llama result[0].resultado.CODIGO, result[0].resultado.MENSAJE, result[0].resultado.DATOS
+
+
+
+
+
+      if (result[0].resultado.CODIGO != 200) {
+        return {
+          "CODIGO": result[0].resultado.CODIGO,
+          "MENSAJE": result[0].resultado.MENSAJE,
+          "DATOS": null
+        };
+      }
+      return {
+        "CODIGO": result[0].resultado.CODIGO,
+        "MENSAJE": result[0].resultado.MENSAJE,
+        "DATOS": result[0].resultado.DATOS
+      };
+    } catch (error) {
+      return {
+        "CODIGO": 500,
+        "MENSAJE": "Error POSTGRES",
+        "DATOS": error
+      };
+    }
+  }
+
 
 
 

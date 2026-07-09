@@ -259,6 +259,9 @@ export class SupervisoresController {
     try{
       //const sql =SQLConfig.crearContexto;
       // EN ESTE CASO ESTA FUNCION RETORNA UN JSON DESDE POSTGRES
+
+
+
       const sql = SQLConfig.ObtenerSupervisorID;
       const params =[
         id_supervisor
