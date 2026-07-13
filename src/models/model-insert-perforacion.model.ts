@@ -28,7 +28,7 @@ export class ModelInsertPerforacion extends Model {
 
 
     @property({
-    type: 'date',
+    type: 'string',
     required: true,
   })
   nombre_perforacion: string;

@@ -35,7 +35,7 @@ export class PerforacionesController {
   // funcion para creacion de una perforacion, esta funcion recibe un json con los datos de la perforacion y llama a la funcion de postgres para insertar los datos en la base de datos, esta funcion retorna un json con el codigo, mensaje y datos que retorna la funcion de postgres
    @authenticate({
     strategy: 'auth',
-    options: [ConfiguracionSeguridad.MenuProyectos, ConfiguracionSeguridad.listarAccion]
+    options: [ConfiguracionSeguridad.MenuMisProyectos, ConfiguracionSeguridad.listarAccion]
   })
   //METODO POST PARA CREAR UNA perforacion
   @post('/CrearPerforacion')
@@ -189,7 +189,7 @@ export class PerforacionesController {
 
   @authenticate({
     strategy: 'auth',
-    options: [ConfiguracionSeguridad.MenuProyectos, ConfiguracionSeguridad.listarAccion]
+    options: [ConfiguracionSeguridad.MenuMisProyectos, ConfiguracionSeguridad.listarAccion]
   })
   @post('/EliminarPerforacion')
   @response(200, {
@@ -201,6 +201,69 @@ export class PerforacionesController {
     },
   })
   async EliminarPerforacion(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(IdEntero),
+        },
+      },
+    })
+    id: IdEntero,
+  ): Promise<object> {
+    try {
+      //const sql =SQLConfig.crearContexto;
+      // EN ESTE CASO ESTA FUNCION RETORNA UN JSON DESDE POSTGRES
+      const sql = SQLConfig.EliminarPerforacion;
+      const params = [
+        id.id
+      ];
+      const result = await this.genericRepository.dataSource.execute(sql, params);
+      //console.log(result[0]);
+      //console.log(result[0]);
+      //console.log(result[0].fun_insertar_contexto_json);
+      //console.log(result[0].fun_insert_torneo.id_torneo);
+      //FUN_ELIMINAR_PREGUNTA() fun_eliminar_pregunta()
+      // gracias a que descubri que si le pongo al final del llamado select ej: SELECT FUN_INSERTAR_PRUEBA_GENERICA_JSON($1,$2,$3) as resultado; ese "as resultado"  puedo acceder a resultado con result[0].resultado y ahi tengo el CODIGO, MENSAJE Y DATOS que es lo que retorna la funcion de postgres
+      //ahora se llama result[0].resultado.CODIGO, result[0].resultado.MENSAJE, result[0].resultado.DATOS
+
+
+      if (result[0].resultado.CODIGO != 200) {
+        return {
+          "CODIGO": result[0].resultado.CODIGO,
+          "MENSAJE": result[0].resultado.MENSAJE,
+          "DATOS": null
+        };
+      }
+      return {
+        "CODIGO": result[0].resultado.CODIGO,
+        "MENSAJE": result[0].resultado.MENSAJE,
+        "DATOS": null
+      };
+    } catch (error) {
+      return {
+        "CODIGO": 500,
+        "MENSAJE": "ERROR POSTGRES",
+        "DATOS": error
+      };
+    }
+  }
+
+
+  //eliminar una perforacion supervisor
+  @authenticate({
+    strategy: 'auth',
+    options: [ConfiguracionSeguridad.MenuMisProyectos, ConfiguracionSeguridad.listarAccion]
+  })
+  @post('/EliminarPerforacionSupervisor')
+  @response(200, {
+    description: 'eliminar una perforacion por id (supervisor)',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(IdEntero),
+      },
+    },
+  })
+  async EliminarPerforacionSupervisor(
     @requestBody({
       content: {
         'application/json': {
@@ -371,7 +434,7 @@ export class PerforacionesController {
 
   @authenticate({
     strategy: 'auth',
-    options: [ConfiguracionSeguridad.MenuProyectos, ConfiguracionSeguridad.listarAccion]
+    options: [ConfiguracionSeguridad.MenuMisProyectos, ConfiguracionSeguridad.listarAccion]
   })
   //METODO POST PARA CREAR UN movimiento de broca a una perforacion
   @post('/RegistrarReporteMovimientoBroca')

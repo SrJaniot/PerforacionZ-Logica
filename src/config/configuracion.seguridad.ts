@@ -19,6 +19,8 @@ export namespace ConfiguracionSeguridad{
   export const MenuSupervisor = 2;
   export const MenuProyectos = 3;
   export const MenuBrocas = 4;
+  export const MenuMisProyectos=5;
+
 
   //-------------------------acciones -------------------------------------
   export const listarAccion = "listar";

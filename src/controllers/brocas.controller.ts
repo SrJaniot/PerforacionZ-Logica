@@ -973,6 +973,98 @@ export class BrocasController {
   }
 
 
+
+
+
+
+
+
+  // FUNCION PARA DEVOLVER UNA BROCA PRESTADA SUPERVISOR CON LA FUNCION DE POSTGRES DEVOLVER_PRESTAMO_BROCA----------------------------------------------------------------------------------------------------------
+
+
+  @authenticate({
+    strategy: 'auth',
+    options: [ConfiguracionSeguridad.MenuMisProyectos, ConfiguracionSeguridad.guardarAccion]
+  })
+  @post('/DevolverPrestamoBrocaSupervisor')
+  @response(200, {
+    description: 'devolver un préstamo de broca instanciada',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(ModelDevolverBroca),
+      },
+    },
+  })
+  async DevolverPrestamoBrocaSupervisor(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(ModelDevolverBroca),
+        },
+      },
+    })
+    data: ModelDevolverBroca,
+  ): Promise<object> {
+    try {
+
+      // tomamos la fecha actual para enviarla a la funcion de postgres bogotá Colombia GMT-5
+      const timeZone = 'America/Bogota';
+      const fechaActual = formatInTimeZone(new Date(), timeZone, 'yyyy-MM-dd HH:mm:ss.SSS');
+      //const sql =SQLConfig.crearContexto;
+      // EN ESTE CASO ESTA FUNCION RETORNA UN JSON DESDE POSTGRES
+      const sql = SQLConfig.DevolverPrestamoBroca;
+      const params = [
+        data.id_prestamo,
+        data.id_broca_instanciada,
+        fechaActual,
+        data.nom_usuario
+
+      ];
+      const result = await this.genericRepository.dataSource.execute(sql, params);
+      //console.log(result[0]);
+      //console.log(result[0]);
+      //console.log(result[0].fun_insertar_contexto_json);
+      //console.log(result[0].fun_insert_torneo.id_torneo);
+      //FUN_ELIMINAR_PREGUNTA() fun_eliminar_pregunta()
+      // gracias a que descubri que si le pongo al final del llamado select ej: SELECT FUN_INSERTAR_PRUEBA_GENERICA_JSON($1,$2,$3) as resultado; ese "as resultado"  puedo acceder a resultado con result[0].resultado y ahi tengo el CODIGO, MENSAJE Y DATOS que es lo que retorna la funcion de postgres
+      //ahora se llama result[0].resultado.CODIGO, result[0].resultado.MENSAJE, result[0].resultado.DATOS
+
+
+      if (result[0].resultado.CODIGO != 200) {
+        return {
+          "CODIGO": result[0].resultado.CODIGO,
+          "MENSAJE": result[0].resultado.MENSAJE,
+          "DATOS": null
+        };
+      }
+
+
+      // enviar correo al administrador de brocas notificando la devolución
+      // aca comienza la captura de datos para el envio de correo al administrador de brocas
+      const correoAdmin = ConfiguracionSeguridad.correoAdmin;
+
+      await this.mailService.sendDevolucionBrocaEmail(correoAdmin!,"Administrado", data.nom_usuario, data.id_broca_instanciada);
+
+      console.log('Correo enviado al administrador:', correoAdmin);
+
+
+
+
+      return {
+        "CODIGO": result[0].resultado.CODIGO,
+        "MENSAJE": result[0].resultado.MENSAJE,
+        "DATOS": null
+      };
+    } catch (error) {
+      return {
+        "CODIGO": 500,
+        "MENSAJE": "ERROR POSTGRES",
+        "DATOS": error
+      };
+    }
+  }
+
+
   //FUNCION PARA OBTENER LAS BROCAS PRESTADAS POR PROYECTO CON LA FUNCION DE POSTGRES OBTENER_PRESTAMOS_BROCA_POR_PROYECTO    ----------------------------------------------------------------------------------------------------------
     @authenticate({
     strategy: 'auth',
@@ -989,6 +1081,68 @@ export class BrocasController {
     },
   })
   async obtenerBrocasPorProyecto(
+    @param.path.number('id_proyecto') id_proyecto: number,
+  ): Promise<object> {
+    try {
+      //const sql =SQLConfig.crearContexto;
+      // EN ESTE CASO ESTA FUNCION RETORNA UN JSON DESDE POSTGRES
+      const sql = SQLConfig.ObtenerPrestamosBrocaPorProyecto;
+      const params = [
+        id_proyecto
+      ];
+      //console.log(sql);
+      //console.log(params);
+      const result = await this.genericRepository.dataSource.execute(sql, params);
+      //console.log(result[0]);
+      //FUN_CONSULTAR_CONTEXTO_ID() fun_consultar_contexto_id()
+      // gracias a que descubri que si le pongo al final del llamado select ej: SELECT FUN_INSERTAR_PRUEBA_GENERICA_JSON($1,$2,$3) as resultado; ese "as resultado"  puedo acceder a resultado con result[0].resultado y ahi tengo el CODIGO, MENSAJE Y DATOS que es lo que retorna la funcion de postgres
+      //ahora se llama result[0].resultado.CODIGO, result[0].resultado.MENSAJE, result[0].resultado.DATOS
+
+
+
+
+
+      if (result[0].resultado.CODIGO != 200) {
+        return {
+          "CODIGO": result[0].resultado.CODIGO,
+          "MENSAJE": result[0].resultado.MENSAJE,
+          "DATOS": null
+        };
+      }
+      return {
+        "CODIGO": result[0].resultado.CODIGO,
+        "MENSAJE": result[0].resultado.MENSAJE,
+        "DATOS": result[0].resultado.DATOS
+      };
+    } catch (error) {
+      return {
+        "CODIGO": 500,
+        "MENSAJE": "Error POSTGRES",
+        "DATOS": error
+      };
+    }
+  }
+
+
+
+
+
+  //FUNCION PARA OBTENER LAS BROCAS PRESTADAS POR PROYECTO CON LA FUNCION DE POSTGRES OBTENER_PRESTAMOS_BROCA_POR_PROYECTO    ----------------------------------------------------------------------------------------------------------
+    @authenticate({
+    strategy: 'auth',
+    options: [ConfiguracionSeguridad.MenuMisProyectos, ConfiguracionSeguridad.buscarAccion_id]
+  })
+  //METODO GET PARA OBTENER DATOS DE LA TABLA BROCA USANDO EL REPOSITORIO GENERICO PEDIR PARAMETRO ID_BROCA
+  @get('/ObtenerBrocasPorProyectoSupervisor/{id_proyecto}')
+  @response(200, {
+    description: 'Obtener Brocas por Proyecto',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(GenericModel),
+      },
+    },
+  })
+  async obtenerBrocasPorProyectoSupervisor(
     @param.path.number('id_proyecto') id_proyecto: number,
   ): Promise<object> {
     try {

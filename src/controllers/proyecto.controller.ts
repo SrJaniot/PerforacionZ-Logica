@@ -1,7 +1,7 @@
 // Uncomment these imports to begin using these cool features!
 
 import {DefaultCrudRepository, juggler} from '@loopback/repository';
-import {GenericModel, IdEntero, ModelInsertProyecto, ModelUpdateProyecto} from '../models';
+import {FinalizarProyectoModel, GenericModel, IdEntero, ModelInsertProyecto, ModelUpdateProyecto} from '../models';
 import {inject, service} from '@loopback/core';
 import {authenticate} from '@loopback/authentication';
 import {ConfiguracionSeguridad} from '../config/configuracion.seguridad';
@@ -311,7 +311,7 @@ export class ProyectoController {
 
   @authenticate({
     strategy: 'auth',
-    options: [ConfiguracionSeguridad.MenuProyectos, ConfiguracionSeguridad.buscarAccion_id]
+    options: [ConfiguracionSeguridad.MenuMisProyectos, ConfiguracionSeguridad.buscarAccion_id]
   })
   //METODO GET PARA OBTENER DATOS DE LA TABLA BROCA USANDO EL REPOSITORIO GENERICO PEDIR PARAMETRO ID_BROCA
   @get('/ObtenerProyectosIDSupervisor/{id_supervisor}')
@@ -536,6 +536,73 @@ export class ProyectoController {
       return {
         "CODIGO": 500,
         "MENSAJE": "Error POSTGRES",
+        "DATOS": error
+      };
+    }
+  }
+
+
+
+
+  //FUNCION PARA FINALIZAR UN PROYECTO
+
+  @authenticate({
+    strategy: 'auth',
+    options: [ConfiguracionSeguridad.MenuProyectos, ConfiguracionSeguridad.eliminarAccion]
+  })
+  @post('/FinalizarProyecto')
+  @response(200, {
+    description: 'finalizar un proyecto por id',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(FinalizarProyectoModel),
+      },
+    },
+  })
+  async FinalizarProyecto(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(FinalizarProyectoModel),
+        },
+      },
+    })
+    data: FinalizarProyectoModel,
+  ): Promise<object> {
+    try {
+      //const sql =SQLConfig.crearContexto;
+      // EN ESTE CASO ESTA FUNCION RETORNA UN JSON DESDE POSTGRES
+      const sql = SQLConfig.FinalizarProyecto;
+      const params = [
+        data.id_proyecto,
+        data.usuario
+      ];
+      const result = await this.genericRepository.dataSource.execute(sql, params);
+      //console.log(result[0]);
+      //console.log(result[0]);
+      //console.log(result[0].fun_insertar_contexto_json);
+      //console.log(result[0].fun_insert_torneo.id_torneo);
+      //FUN_ELIMINAR_PREGUNTA() fun_eliminar_pregunta()
+      // gracias a que descubri que si le pongo al final del llamado select ej: SELECT FUN_INSERTAR_PRUEBA_GENERICA_JSON($1,$2,$3) as resultado; ese "as resultado"  puedo acceder a resultado con result[0].resultado y ahi tengo el CODIGO, MENSAJE Y DATOS que es lo que retorna la funcion de postgres
+      //ahora se llama result[0].resultado.CODIGO, result[0].resultado.MENSAJE, result[0].resultado.DATOS
+
+
+      if (result[0].resultado.CODIGO != 200) {
+        return {
+          "CODIGO": result[0].resultado.CODIGO,
+          "MENSAJE": result[0].resultado.MENSAJE,
+          "DATOS": null
+        };
+      }
+      return {
+        "CODIGO": result[0].resultado.CODIGO,
+        "MENSAJE": result[0].resultado.MENSAJE,
+        "DATOS": null
+      };
+    } catch (error) {
+      return {
+        "CODIGO": 500,
+        "MENSAJE": "ERROR POSTGRES",
         "DATOS": error
       };
     }

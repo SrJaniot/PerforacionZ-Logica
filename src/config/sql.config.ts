@@ -37,6 +37,7 @@ export namespace SQLConfig {
   export const ObtenerProyectos = 'SELECT FUN_OBTENER_TODOS_PROYECTOS_JSON() as resultado';
   export const ObtenerProyectosSupervisorID = 'SELECT FUN_OBTENER_PROYECTOS_POR_SUPERVISOR_JSON($1) as resultado';
   export const EliminarProyecto = 'SELECT FUN_ELIMINAR_PROYECTO_POR_ID_JSON($1) as resultado';
+  export const FinalizarProyecto = 'SELECT FUN_FINALIZAR_PROYECTO_POR_ID_JSON($1,$2) as resultado';
 
   export const ObtenerDepartamentos = 'SELECT FUN_OBTENER_TODOS_DEPARTAMENTOS_JSON() as resultado';
   export const ObtenerMunicipiosIDDepartamento = 'SELECT FUN_OBTENER_MUNICIPIOS_POR_DEPARTAMENTO_JSON($1) as resultado';
