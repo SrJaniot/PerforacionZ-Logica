@@ -20,6 +20,10 @@ export namespace SQLConfig {
   export const ObtenerBrocasPrestadasActivos = 'SELECT OBTENER_PRESTAMOS_BROCA_ACTIVOS() as resultado';
   export const ObtenerHistorialPrestamosBrocaPorBrocaInstanciada = 'SELECT OBTENER_HISTORIAL_PRESTAMOS_BROCA_POR_BROCA_INSTANCIADA($1) as resultado';
 
+  export const ObtenerMetrosvsBrocaPorProyecto = 'SELECT FUN_EST_METROS_VS_BROCA_POR_PROYECTO_JSON() as resultado';
+  export const ObtenerMetrosvsMarcaBroca = 'SELECT FUN_EST_METROS_VS_MARCA_BROCA_JSON() as resultado';
+  export const ObtenerMetrosvsModeloBroca = 'SELECT FUN_EST_METROS_VS_MODELO_BROCA_JSON() as resultado';
+
 
   //funciones para el controlador supervisores.controller.ts
   export const CrearSupervisor = 'SELECT FUN_INSERTAR_SUPERVISORES_JSON($1,$2,$3,$4,$5) as resultado';

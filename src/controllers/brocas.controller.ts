@@ -1314,7 +1314,159 @@ export class BrocasController {
 
 
 
+  //FUNCIONES ESTADISTICAS DE BROCAS -----------------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------------------------------------------------------------------------------------
 
+
+  // FUNCION PARA OBTENER TMETROS VS BROCA POR PROYECTO  FUN_EST_METROS_VS_BROCA_POR_PROYECTO_JSON() ---------------------------------------------------------------------------------------------------------
+  @authenticate({
+    strategy: 'auth',
+    options: [ConfiguracionSeguridad.MenuBrocas, ConfiguracionSeguridad.listarAccion]
+  })
+  @get('/ObtenerMetrosvsBrocaPorProyecto')
+  @response(200, {
+    description: 'Obtener metros vs broca por proyecto',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(GenericModel),
+      },
+    },
+  })
+  async obtenerMetrosvsBrocaPorProyecto(): Promise<object> {
+    try {
+      //const sql =SQLConfig.crearContexto;
+      // EN ESTE CASO ESTA FUNCION RETORNA UN JSON DESDE POSTGRES
+      const sql = SQLConfig.ObtenerMetrosvsBrocaPorProyecto;
+      const result = await this.genericRepository.dataSource.execute(sql);
+      // FUN_CONSULTAR_BROCAS()  fun_consultar_brocas()
+      // gracias a que descubri que si le pongo al final del llamado select ej: SELECT FUN_INSERTAR_PRUEBA_GENERICA_JSON($1,$2,$3) as resultado; ese "as resultado"  puedo acceder a resultado con result[0].resultado y ahi tengo el CODIGO, MENSAJE Y DATOS que es lo que retorna la funcion de postgres
+      //ahora se llama result[0].resultado.CODIGO, result[0].resultado.MENSAJE, result[0].resultado.DATOS
+
+
+      if (result[0].resultado.CODIGO != 200) {
+        return {
+          "CODIGO": result[0].resultado.CODIGO,
+          "MENSAJE": result[0].resultado.MENSAJE,
+          "DATOS": null
+        };
+      }
+      return {
+        "CODIGO": result[0].resultado.CODIGO,
+        "MENSAJE": result[0].resultado.MENSAJE,
+        "DATOS": result[0].resultado.DATOS
+      };
+
+    } catch (error) {
+      return {
+        "CODIGO": 500,
+        "MENSAJE": "Error POSTGRES",
+        "DATOS": error
+      };
+    }
+  }
+
+
+
+
+  // FUNCION PARA OBTENER METROS VS MARCA DE BROCA FUN_EST_METROS_VS_MARCA_BROCA_JSON()  ---------------------------------------------------------------------------------------------------------
+  @authenticate({
+    strategy: 'auth',
+    options: [ConfiguracionSeguridad.MenuBrocas, ConfiguracionSeguridad.listarAccion]
+  })
+  @get('/ObtenerMetrosvsMarcaBroca')
+  @response(200, {
+    description: 'Obtener metros vs marca de broca',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(GenericModel),
+      },
+    },
+  })
+  async obtenerMetrosvsMarcaBroca(): Promise<object> {
+    try {
+      //const sql =SQLConfig.crearContexto;
+      // EN ESTE CASO ESTA FUNCION RETORNA UN JSON DESDE POSTGRES
+      const sql = SQLConfig.ObtenerMetrosvsMarcaBroca;
+      const result = await this.genericRepository.dataSource.execute(sql);
+      // FUN_CONSULTAR_BROCAS()  fun_consultar_brocas()
+      // gracias a que descubri que si le pongo al final del llamado select ej: SELECT FUN_INSERTAR_PRUEBA_GENERICA_JSON($1,$2,$3) as resultado; ese "as resultado"  puedo acceder a resultado con result[0].resultado y ahi tengo el CODIGO, MENSAJE Y DATOS que es lo que retorna la funcion de postgres
+      //ahora se llama result[0].resultado.CODIGO, result[0].resultado.MENSAJE, result[0].resultado.DATOS
+
+
+      if (result[0].resultado.CODIGO != 200) {
+        return {
+          "CODIGO": result[0].resultado.CODIGO,
+          "MENSAJE": result[0].resultado.MENSAJE,
+          "DATOS": null
+        };
+      }
+      return {
+        "CODIGO": result[0].resultado.CODIGO,
+        "MENSAJE": result[0].resultado.MENSAJE,
+        "DATOS": result[0].resultado.DATOS
+      };
+
+    } catch (error) {
+      return {
+        "CODIGO": 500,
+        "MENSAJE": "Error POSTGRES",
+        "DATOS": error
+      };
+    }
+  }
+
+
+
+
+
+  // FUNCION PARA OBTENER METROS VS MODELO DE BROCA FUN_EST_METROS_VS_MODELO_BROCA_JSON()  ---------------------------------------------------------------------------------------------------------
+  @authenticate({
+    strategy: 'auth',
+    options: [ConfiguracionSeguridad.MenuBrocas, ConfiguracionSeguridad.listarAccion]
+  })
+  @get('/ObtenerMetrosvsModeloBroca')
+  @response(200, {
+    description: 'Obtener metros vs modelo de broca',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(GenericModel),
+      },
+    },
+  })
+  async obtenerMetrosvsModeloBroca(): Promise<object> {
+    try {
+      //const sql =SQLConfig.crearContexto;
+      // EN ESTE CASO ESTA FUNCION RETORNA UN JSON DESDE POSTGRES
+      const sql = SQLConfig.ObtenerMetrosvsModeloBroca;
+      const result = await this.genericRepository.dataSource.execute(sql);
+      // FUN_CONSULTAR_BROCAS()  fun_consultar_brocas()
+      // gracias a que descubri que si le pongo al final del llamado select ej: SELECT FUN_INSERTAR_PRUEBA_GENERICA_JSON($1,$2,$3) as resultado; ese "as resultado"  puedo acceder a resultado con result[0].resultado y ahi tengo el CODIGO, MENSAJE Y DATOS que es lo que retorna la funcion de postgres
+      //ahora se llama result[0].resultado.CODIGO, result[0].resultado.MENSAJE, result[0].resultado.DATOS
+
+
+      if (result[0].resultado.CODIGO != 200) {
+        return {
+          "CODIGO": result[0].resultado.CODIGO,
+          "MENSAJE": result[0].resultado.MENSAJE,
+          "DATOS": null
+        };
+      }
+      return {
+        "CODIGO": result[0].resultado.CODIGO,
+        "MENSAJE": result[0].resultado.MENSAJE,
+        "DATOS": result[0].resultado.DATOS
+      };
+
+    } catch (error) {
+      return {
+        "CODIGO": 500,
+        "MENSAJE": "Error POSTGRES",
+        "DATOS": error
+      };
+    }
+  }
 
 
 
